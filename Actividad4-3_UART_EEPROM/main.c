@@ -21,7 +21,7 @@ void actualiceLeds();
 
 int main(void)
 {
-	UART_init(103,8,DISABLED,MONOBIT,ENABLED,ENABLED);
+	UART_init(103,8,DISABLED,MONOBIT,DISABLED,ENABLED);
 	DDRD |= 0b11111100; // D7 a D2 output
 	DDRB |= 0b00000011; // B1 y B0 output
 	sei();

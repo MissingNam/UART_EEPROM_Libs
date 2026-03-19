@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000078  00000000  00000000  000006d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000c4f  00000000  00000000  00000748  2**0
+  6 .debug_info   00000c53  00000000  00000000  00000748  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000073b  00000000  00000000  00001397  2**0
+  7 .debug_abbrev 0000073b  00000000  00000000  0000139b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000065a  00000000  00000000  00001ad2  2**0
+  8 .debug_line   0000065a  00000000  00000000  00001ad6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000138  00000000  00000000  0000212c  2**2
+  9 .debug_frame  00000138  00000000  00000000  00002130  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000470  00000000  00000000  00002264  2**0
+ 10 .debug_str    00000470  00000000  00000000  00002268  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000006a2  00000000  00000000  000026d4  2**0
+ 11 .debug_loc    000006a2  00000000  00000000  000026d8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000068  00000000  00000000  00002d76  2**0
+ 12 .debug_ranges 00000068  00000000  00000000  00002d7a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -615,11 +615,11 @@ void actualiceLeds();
 
 int main(void)
 {
-	UART_init(103,8,DISABLED,MONOBIT,ENABLED,ENABLED);
+	UART_init(103,8,DISABLED,MONOBIT,DISABLED,ENABLED);
  3f4:	ee 24       	eor	r14, r14
  3f6:	e3 94       	inc	r14
  3f8:	f1 2c       	mov	r15, r1
- 3fa:	01 e0       	ldi	r16, 0x01	; 1
+ 3fa:	00 e0       	ldi	r16, 0x00	; 0
  3fc:	10 e0       	ldi	r17, 0x00	; 0
  3fe:	20 e0       	ldi	r18, 0x00	; 0
  400:	30 e0       	ldi	r19, 0x00	; 0
