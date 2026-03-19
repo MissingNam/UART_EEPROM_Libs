@@ -14,7 +14,8 @@
 
 bool RxFlag = false;
 uint8_t dato = 0;
-char buffer[4];
+volatile char rxBuffer[10];
+volatile uint8_t i = 0;
 
 void actualiceLeds();
 
@@ -32,17 +33,15 @@ int main(void)
 	UART_string("For example 3 will turn on the last two leds \n\r");
 	
 	
-	
-	
-    /* Replace with your application code */
     while (1) 
     {
 		if(RxFlag)
 		{
-			UART_readString(buffer,sizeof(buffer));
-			dato = atoi(buffer);
+			cli();
+			dato = atoi((char*)rxBuffer);
 			EEPROM_update(0,dato);
 			RxFlag = false;
+			sei();
 			actualiceLeds();
 			
 		}
@@ -51,9 +50,19 @@ int main(void)
 
 ISR(USART_RX_vect)
 {
-	if(!RxFlag)
+	char c = UDR0;
+
+	if(c == '\n' || c == '\r')
 	{
+		rxBuffer[i] = '\0';
+		i = 0;
 		RxFlag = true;
+	}
+	else if(i < sizeof(rxBuffer)-1)
+	{
+		rxBuffer[i++] = c;
+	} else {
+		i = 0;
 	}
 }
 

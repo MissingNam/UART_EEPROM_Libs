@@ -23,21 +23,24 @@ void UART_write(unsigned char);
 void UART_string(char*);
 
 
-void UART_init(int baudRate, int dataSize, int parityMode, int stopBits, int TXint, int RXint)
+void UART_init(int UBRR, int dataSize, int parityMode, int stopBits, int TXint, int RXint)
 {
 	UCSR0A |= (0<<U2X0); // velocidad doble OFF
 	UCSR0A |= (0<<MPCM0); // multicore off
 	UCSR0B |= (1<<TXEN0); // Tx Enable
 	UCSR0B |= (1<<RXEN0); // Rx Enable
-	UCSR0B |= (1<<UDRIE0); // Data register empty
+	//UCSR0B |= (1<<UDRIE0); // Data register empty
 	UCSR0B |= (TXint<<TXCIE0); // TX complete int 
 	UCSR0B |= (RXint<<RXCIE0); // Rx complete int
 	UCSR0C |= (0<<UMSEL01) | (0<<UMSEL00); // asincrono
-	UCSR0C |= (PAIRBIT<<USBS0); // stop bit 1 bit = 0
+	UCSR0C &= ~(1<<USBS0);
+	UCSR0C |= (stopBits<<USBS0);// stop bit 1 bit = 0
 	UCSR0C |= (0<<UCPOL0); // asincrono
-	UBRR0 = baudRate; // 103 usual
+	UBRR0 = UBRR; // 103 usual
 	
 	// configuracion de tamaño de byte
+	UCSR0C &= ~((1<<UCSZ01)|(1<<UCSZ00));
+	UCSR0B &= ~(1<<UCSZ02);
 	switch(dataSize)
 	{
 		case 5:
@@ -60,6 +63,7 @@ void UART_init(int baudRate, int dataSize, int parityMode, int stopBits, int TXi
 			break;	
 	}
 	
+	UCSR0C &= ~((1<<UPM01)|(1<<UPM00));
 	switch(parityMode)
 	{
 		case DISABLED:
