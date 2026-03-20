@@ -12,7 +12,7 @@
 #include "Librerias/EEPROM.h"
 #include "Librerias/UART.h"
 
-bool RxFlag = false;
+volatile bool RxFlag = false;
 uint8_t dato = 0;
 volatile char rxBuffer[10];
 volatile uint8_t i = 0;
@@ -29,19 +29,16 @@ int main(void)
 	dato = EEPROM_read(0);
 	actualiceLeds();
 	
-	UART_string("Send a number that in binary forms what you want \n\r");
-	UART_string("For example 3 will turn on the last two leds \n\r");
+	UART_string("Numbers 1-8 will turn on LEDs\n\r");
+	UART_string("Letter A-H will turn off LEDs \n\r");
 	
 	
     while (1) 
     {
 		if(RxFlag)
 		{
-			cli();
-			dato = atoi((char*)rxBuffer);
-			EEPROM_update(0,dato);
+			dato = UART_read();
 			RxFlag = false;
-			sei();
 			actualiceLeds();
 			
 		}
@@ -50,26 +47,106 @@ int main(void)
 
 ISR(USART_RX_vect)
 {
-	char c = UDR0;
-
-	if(c == '\n' || c == '\r')
+	if(!RxFlag)
 	{
-		rxBuffer[i] = '\0';
-		i = 0;
 		RxFlag = true;
-	}
-	else if(i < sizeof(rxBuffer)-1)
-	{
-		rxBuffer[i++] = c;
-	} else {
-		i = 0;
 	}
 }
 
-
 void actualiceLeds()
 {
-	int bit;
+	
+	// encendidos
+	switch(dato)
+	{
+		case '1':
+			PORTB |= (1<<1);
+			UART_string("LED0 ON \n\r");
+			break;
+			
+		case '2':
+			PORTB |= (1<<0);
+			UART_string("LED1 ON \n\r");
+			break;
+			
+		case '3':
+			PORTD |= (1<<7);
+			UART_string("LED2 ON \n\r");
+			break;
+			
+		case '4':
+			PORTD |= (1<<6);
+			UART_string("LED3 ON \n\r");
+			break;
+			
+		case '5':
+			PORTD |= (1<<5);
+			UART_string("LED4 ON \n\r");
+			break;
+			
+		case '6':
+			PORTD |= (1<<4);
+			UART_string("LED5 ON \n\r");
+			break;
+			
+		case '7':
+			PORTD |= (1<<3);
+			UART_string("LED6 ON \n\r");
+			break;
+			
+		case '8':
+			PORTD |= (1<<2);
+			UART_string("LED7 ON \n\r");
+			break;
+	}
+	
+	// aapagados
+	switch(dato)
+	{
+		case 'A':
+		PORTB &= ~(1<<1);
+		UART_string("LED0 OFF \n\r");
+		break;
+		
+		case 'B':
+		PORTB &= ~(1<<0);
+		UART_string("LED1 OFF \n\r");
+		break;
+		
+		case 'C':
+		PORTD &= ~(1<<7);
+		UART_string("LED2 OFF \n\r");
+		break;
+		
+		case 'D':
+		PORTD &= ~(1<<6);
+		UART_string("LED3 OFF \n\r");
+		break;
+		
+		case 'E':
+		PORTD &= ~(1<<5);
+		UART_string("LED4 ON \n\r");
+		break;
+		
+		case 'F':
+		PORTD &= ~(1<<4);
+		UART_string("LED5 ON \n\r");
+		break;
+		
+		case 'G':
+		PORTD &= ~(1<<3);
+		UART_string("LED6 ON \n\r");
+		break;
+		
+		case 'H':
+		PORTD &= ~(1<<2);
+		UART_string("LED7 ON \n\r");
+		break;
+	}
+	
+	
+	
+	/*int bit;
 
 	// LED0
 	bit = (dato>>0) & 1;
@@ -150,4 +227,5 @@ void actualiceLeds()
 		PORTD &= ~(1<<2);
 		UART_string("LED7 OFF \n\r");
 	}
+	*/
 }
